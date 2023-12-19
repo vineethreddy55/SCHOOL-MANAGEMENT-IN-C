@@ -1,0 +1,121 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_STUDENTS 100
+#define MAX_COURSES 5
+#define MAX_NAME_LENGTH 50
+
+typedef struct {
+    char name[MAX_NAME_LENGTH];
+    int id;
+} Course;
+
+typedef struct {
+    char name[MAX_NAME_LENGTH];
+    int id;
+} Student;
+
+typedef struct {
+    int studentId;
+    int courseId;
+    float grade;
+} Enrollment;
+
+typedef struct {
+    Student students[MAX_STUDENTS];
+    Course courses[MAX_COURSES];
+    Enrollment enrollments[MAX_STUDENTS * MAX_COURSES];
+    int studentCount;
+    int courseCount;
+    int enrollmentCount;
+} SchoolManagementSystem;
+
+void initialize(SchoolManagementSystem* system) {
+    system->studentCount = 0;
+    system->courseCount = 0;
+    system->enrollmentCount = 0;
+}
+
+void addStudent(SchoolManagementSystem* system, const char* name) {
+    if (system->studentCount < MAX_STUDENTS) {
+        strcpy(system->students[system->studentCount].name, name);
+        system->students[system->studentCount].id = system->studentCount + 1;
+        system->studentCount++;
+        printf("Student added successfully.\n");
+    } else {
+        printf("Cannot add more students. Maximum limit reached.\n");
+    }
+}
+
+void addCourse(SchoolManagementSystem* system, const char* name) {
+    if (system->courseCount < MAX_COURSES) {
+        strcpy(system->courses[system->courseCount].name, name);
+        system->courses[system->courseCount].id = system->courseCount + 1;
+        system->courseCount++;
+        printf("Course added successfully.\n");
+    } else {
+        printf("Cannot add more courses. Maximum limit reached.\n");
+    }
+}
+
+void enrollStudent(SchoolManagementSystem* system, int studentId, int courseId, float grade) {
+    if (studentId > 0 && studentId <= system->studentCount && courseId > 0 && courseId <= system->courseCount) {
+        if (system->enrollmentCount < MAX_STUDENTS * MAX_COURSES) {
+            system->enrollments[system->enrollmentCount].studentId = studentId;
+            system->enrollments[system->enrollmentCount].courseId = courseId;
+            system->enrollments[system->enrollmentCount].grade = grade;
+            system->enrollmentCount++;
+            printf("Enrollment successful.\n");
+        } else {
+            printf("Cannot enroll more students. Maximum limit reached.\n");
+        }
+    } else {
+        printf("Invalid student or course ID.\n");
+    }
+}
+
+void displayStudents(SchoolManagementSystem* system) {
+    printf("List of Students:\n");
+    for (int i = 0; i < system->studentCount; i++) {
+        printf("ID: %d, Name: %s\n", system->students[i].id, system->students[i].name);
+    }
+}
+
+void displayCourses(SchoolManagementSystem* system) {
+    printf("List of Courses:\n");
+    for (int i = 0; i < system->courseCount; i++) {
+        printf("ID: %d, Name: %s\n", system->courses[i].id, system->courses[i].name);
+    }
+}
+
+void displayEnrollments(SchoolManagementSystem* system) {
+    printf("List of Enrollments:\n");
+    for (int i = 0; i < system->enrollmentCount; i++) {
+        printf("Student ID: %d, Course ID: %d, Grade: %.2f\n",
+               system->enrollments[i].studentId,
+               system->enrollments[i].courseId,
+               system->enrollments[i].grade);
+    }
+}
+
+int main() {
+    SchoolManagementSystem system;
+    initialize(&system);
+
+    addStudent(&system, "John Doe");
+    addStudent(&system, "Jane Doe");
+
+    addCourse(&system, "Math");
+    addCourse(&system, "English");
+
+    enrollStudent(&system, 1, 1, 90.5);
+    enrollStudent(&system, 2, 1, 85.0);
+    enrollStudent(&system, 1, 2, 78.5);
+
+    displayStudents(&system);
+    displayCourses(&system);
+    displayEnrollments(&system);
+
+    return 0;
+}
